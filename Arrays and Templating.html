@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Knockout.js - Part 2: Observable Arrays &amp; Templating</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" />
+    <style>
+      :root {
+        --paragraph-color: #7e7d7d;
+        --border-radius: 6px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Source Sans Pro", sans-serif;
+      }
+
+      body {
+        color: #222;
+        background: linear-gradient(180deg, #64cddb 0%, #36abd0 100%);
+        padding-top: 4em;
+      }
+      h2,
+      p {
+        margin: 0;
+      }
+
+      .card {
+        background: #ffffff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12);
+        border-radius: var(--border-radius);
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .card header {
+        padding: 1em;
+      }
+
+      .card-section {
+        padding: 2em;
+      }
+
+      .card-section h2 {
+        font-weight: bold;
+        margin-bottom: 0.2em;
+      }
+      .card-section p {
+        font-weight: normal;
+        color: var(--paragraph-color);
+        margin-bottom: 1em;
+      }
+
+      .counter {
+        font-size: 5em;
+        font-weight: bold;
+        width: 1.5em;
+        text-align: center;
+      }
+
+      button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--paragraph-color);
+        height: 40px;
+        padding-left: 1em;
+        padding-right: 1em;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+      }
+      button:focus {
+        outline: #39a7b8 auto 1px;
+      }
+      button[disabled] {
+        border: 1px solid #ddd;
+        cursor: inherit;
+      }
+
+      .button_small {
+        font-size: 0.8em;
+        text-align: center;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+      }
+      .counter-ui-container {
+        margin: 0;
+        padding: 0;
+      }
+      .counter-ui-container li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5em 0;
+        margin: 0;
+      }
+      .li_label {
+        font-size: 1.3em;
+      }
+
+      footer {
+        color: #999;
+        text-align: center;
+        padding: 1em 1em 1em;
+      }
+      footer span {
+        font-size: 0.8em;
+      }
+
+      .icon-bone,
+      .icon-ball,
+      .icon-circle,
+      .icon-rabbit {
+        width: 64px;
+        height: 64px;
+        -ms-interpolation-mode: nearest-neighbor;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: pixelated;
+        display: inline-block;
+        background: url("https://assets.codepen.io/21542/Toys.png") no-repeat no-repeat;
+        background-size: 256px;
+        vertical-align: middle;
+        position: relative;
+        top: -8px;
+      }
+      .icon-ball {
+        background-position: -64px;
+      }
+      .icon-circle {
+        background-position: -128px;
+      }
+      .icon-rabbit {
+        background-position: -192px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="knockout-app" class="card">
+      <header>Good Dog Walks Inc.</header>
+      <div class="card-section">
+        <h2>Toy Inventory</h2>
+        <p data-bind="visible: inventory().length === 0">You don't have any toys yet!</p>
+        <p data-bind="visible: inventory().length > 0">These are the assets we have to work with.</p>
+
+        <button data-bind="click: addItem, enable: inventory().length < 5">+ Add Toy</button>
+        <ul class="counter-ui-container" data-bind="foreach: inventory">
+          <li>
+            <span>
+              <span data-bind="class: $data.icon"></span>
+              <span class="li_label" data-bind="text: $data.text"></span>
+            </span>
+            <button class="button_small" data-bind="click: $parent.removeItem, attr: {'item-index': $index}">&times;</button>
+          </li>
+        </ul>
+      </div>
+      <footer>
+        <span>Have a tail wagging day!</span>
+      </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
+    <script>
+      function InventoryViewModel() {
+        var self = this;
+
+        var iconTypes = [
+          { icon: "icon-bone", text: "Bone" },
+          { icon: "icon-ball", text: "Ball" },
+          { icon: "icon-circle", text: "Circle" },
+          { icon: "icon-rabbit", text: "Rabbit" },
+        ];
+
+        self.inventory = ko.observableArray([iconTypes[1]]);
+
+        self.addItem = function () {
+          var index = Math.floor(Math.random() * iconTypes.length);
+          self.inventory.push(iconTypes[index]);
+        };
+
+        self.removeItem = function (data, event) {
+          var indexToRemove = event.target.getAttribute("item-index");
+          self.inventory.splice(indexToRemove, 1);
+        };
+      }
+
+      const knockoutApp = document.querySelector("#knockout-app");
+      ko.applyBindings(new InventoryViewModel(), knockoutApp);
+    </script>
+  </body>
+</html>

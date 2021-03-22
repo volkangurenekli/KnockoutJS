@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Knockout.js - Part 1: Intro and Basics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" />
+    <style>
+      :root {
+        --paragraph-color: #7e7d7d;
+        --border-radius: 6px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Source Sans Pro", sans-serif;
+      }
+
+      body {
+        color: #222;
+        background: linear-gradient(180deg, #64cddb 0%, #36abd0 100%);
+        padding-top: 4em;
+      }
+      h2,
+      p {
+        margin: 0;
+      }
+
+      .card {
+        background: #ffffff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12);
+        border-radius: var(--border-radius);
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .card header {
+        padding: 1em;
+      }
+
+      .card-section {
+        text-align: center;
+        padding-top: 2em;
+        padding-bottom: 2em;
+      }
+
+      .card-section h2 {
+        font-weight: bold;
+        margin-bottom: 0.2em;
+      }
+      .card-section p {
+        font-weight: normal;
+        color: var(--paragraph-color);
+      }
+
+      .counter-ui-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .counter {
+        font-size: 5em;
+        font-weight: bold;
+        width: 1.5em;
+        text-align: center;
+      }
+
+      button {
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--paragraph-color);
+        height: 40px;
+        width: 40px;
+        border-radius: var(--border-radius);
+      }
+      button:focus {
+        outline: #39a7b8 auto 1px;
+      }
+
+      footer {
+        color: #999;
+        text-align: center;
+        padding: 2em 1em 1em;
+      }
+      footer span {
+        font-size: 0.8em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="knockout-app" class="card">
+      <header>Good Dog Walks Inc.</header>
+
+      <div class="card-section">
+        <h2>Hello, <span data-bind="text: userName"></span></h2>
+        <p>How many walks will we take today?</p>
+        <div class="counter-ui-container">
+          <button data-bind="click: update(-1)">-</button>
+          <span class="counter" data-bind="text: count">0</span>
+          <button data-bind="click: update(1)">+</button>
+        </div>
+
+        <p>Your dog is <span data-bind="text: dogStatus"></span></p>
+      </div>
+
+      <footer>
+        <span>Have a tail wagging day!</span>
+      </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
+    <script>
+      function CounterViewModel() {
+        var self = this;
+        self.userName = ko.observable("Volkan");
+        self.count = ko.observable(0);
+
+        self.update = function (param) {
+          var currentValue = self.count();
+          self.count(currentValue + param);
+        };
+
+        self.dogStatus = ko.computed(function () {
+          var currentValue = self.count();
+
+          if (currentValue === 1) {
+            return "UNDERWHELMED.";
+          } else if (currentValue === 2) {
+            return "LISTENING...";
+          } else if (currentValue > 2) {
+            return "THRILLED!";
+          } else {
+            return "UPSET.";
+          }
+        });
+      }
+
+      const knockoutApp = document.querySelector("#knockout-app");
+      ko.applyBindings(new CounterViewModel(), knockoutApp);
+    </script>
+  </body>
+</html>
